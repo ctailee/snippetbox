@@ -13,7 +13,7 @@ import (
 )
 
 type application struct {
-	logger *slog.Logger
+	logger   *slog.Logger
 	snippets *models.SnippetModel
 }
 
@@ -35,9 +35,8 @@ func main() {
 	}
 	defer db.Close()
 
-
 	app := &application{
-		logger: logger,
+		logger:   logger,
 		snippets: &models.SnippetModel{DB: db},
 	}
 
