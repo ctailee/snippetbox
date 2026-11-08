@@ -3,7 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
-	// "html/template"
+	"html/template"
 	"net/http"
 	"strconv"
 
@@ -58,7 +58,24 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "%+v", snippet)
+	data := templateData{
+		Snippet: snippet,
+	}
+
+	files := []string{
+		"assets/html/components/nav.html",
+		"assets/html/pages/base.html",
+		"assets/html/pages/view.html",
+	}
+
+	pages, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serverError(w, r, err)
+	}
+
+	if err := pages.ExecuteTemplate(w, "base", data); err != nil {
+		app.serverError(w, r, err)
+	}
 }
 
 func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
