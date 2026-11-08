@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"runtime/debug"
 )
@@ -18,4 +19,15 @@ func (app *application) serverError(w http.ResponseWriter, r *http.Request, err 
 
 func (app *application) clientError(w http.ResponseWriter, status int) {
 	http.Error(w, http.StatusText(status), status)
+}
+
+func (app *application) render(w http.ResponseWriter, r *http.Request, status int, page string, data templateData) error {
+	ts, ok := app.templateCache[page]
+	if !ok {
+		return fmt.Errorf("The template %s dose not exist in cache", page)
+	}
+
+	w.WriteHeader(status)
+
+	return ts.ExecuteTemplate(w, "base", data)
 }

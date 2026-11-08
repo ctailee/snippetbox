@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"html/template"
 	"net/http"
 	"strconv"
 
@@ -23,19 +22,7 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		Snippets: snippets,
 	}
 
-	files := []string{
-		"./assets/html/components/nav.html",
-		"./assets/html/pages/base.html",
-		"./assets/html/pages/home.html",
-	}
-
-	pages, err := template.ParseFiles(files...)
-	if err != nil {
-		app.serverError(w, r, err)
-		return
-	}
-
-	if err := pages.ExecuteTemplate(w, "base", data); err != nil {
+	if err := app.render(w, r, http.StatusOK, "home.html", data); err != nil {
 		app.serverError(w, r, err)
 		return
 	}
@@ -63,18 +50,7 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 		Snippet: snippet,
 	}
 
-	files := []string{
-		"assets/html/components/nav.html",
-		"assets/html/pages/base.html",
-		"assets/html/pages/view.html",
-	}
-
-	pages, err := template.ParseFiles(files...)
-	if err != nil {
-		app.serverError(w, r, err)
-	}
-
-	if err := pages.ExecuteTemplate(w, "base", data); err != nil {
+	if err := app.render(w, r, http.StatusOK, "view.html", data); err != nil {
 		app.serverError(w, r, err)
 	}
 }
