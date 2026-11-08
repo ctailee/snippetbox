@@ -19,25 +19,26 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	for _, snippet := range snippets {
-		fmt.Fprintf(w, "%+v", snippet)
+	data := templateData{
+		Snippets: snippets,
 	}
-	// files := []string{
-	// 	"./assets/html/components/nav.html",
-	// 	"./assets/html/pages/base.html",
-	// 	"./assets/html/pages/home.html",
-	// }
 
-	// pages, err := template.ParseFiles(files...)
-	// if err != nil {
-	// 	app.serverError(w, r, err)
-	// 	return
-	// }
+	files := []string{
+		"./assets/html/components/nav.html",
+		"./assets/html/pages/base.html",
+		"./assets/html/pages/home.html",
+	}
 
-	// if err := pages.ExecuteTemplate(w, "base", nil); err != nil {
-	// 	app.serverError(w, r, err)
-	// 	return
-	// }
+	pages, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	if err := pages.ExecuteTemplate(w, "base", data); err != nil {
+		app.serverError(w, r, err)
+		return
+	}
 }
 
 func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
